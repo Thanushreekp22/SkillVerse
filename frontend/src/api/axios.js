@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+// In production (Vercel), set VITE_API_URL to the Render backend URL, e.g.
+//   VITE_API_URL=https://skillverse-api.onrender.com/api
+// Locally it falls back to '/api' which the Vite dev server proxies.
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },

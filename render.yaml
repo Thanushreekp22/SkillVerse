@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: skillverse-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES
+        value: 7d
+      - key: MONGODB_URI
+        sync: false # paste your MongoDB Atlas URI in the Render dashboard
+      - key: FRONTEND_URL
+        sync: false # set to your Vercel frontend URL, e.g. https://skillverse.vercel.app
