@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ConfirmDialog from './ConfirmDialog';
 
 const RocketIcon = () => (
   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -51,8 +52,10 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const handleLogout = () => {
+    setConfirmLogout(false);
     logout();
     navigate('/login');
   };
@@ -88,12 +91,19 @@ const Navbar = () => {
           </nav>
 
           <div className="nav-user">
-            <span className="nav-avatar">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
-            <span className="meta">
-              <div className="name">{user?.name}</div>
-              <div className="email">{user?.email}</div>
-            </span>
-            <button className="btn-icon" onClick={handleLogout} title="Logout">
+            <button
+              type="button"
+              className="nav-user-chip"
+              onClick={() => setConfirmLogout(true)}
+              title="Account — click to log out"
+            >
+              <span className="nav-avatar">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+              <span className="meta">
+                <div className="name">{user?.name}</div>
+                <div className="email">{user?.email}</div>
+              </span>
+            </button>
+            <button className="btn-icon" onClick={() => setConfirmLogout(true)} title="Logout">
               <LogoutIcon />
             </button>
           </div>
@@ -103,6 +113,15 @@ const Navbar = () => {
       <main className="page">
         <Outlet />
       </main>
+
+      <ConfirmDialog
+        open={confirmLogout}
+        title="Log out of SkillVerse?"
+        message={`You will be signed out of ${user?.name || 'your account'}. You can log back in anytime.`}
+        confirmText="Yes, log out"
+        onConfirm={handleLogout}
+        onCancel={() => setConfirmLogout(false)}
+      />
     </>
   );
 };

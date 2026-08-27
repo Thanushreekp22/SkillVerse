@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { toast } from 'react-toastify';
 import { ALL_SKILLS, SKILL_GROUPS } from '../data/skillsList';
 import { Plus, Trash, Sparkle, Tag } from '../components/icons';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 const LEVEL_LABELS = { 1: 'Beginner', 2: 'Novice', 3: 'Intermediate', 4: 'Advanced', 5: 'Expert' };
 
@@ -16,6 +17,8 @@ const MySkills = () => {
   const [editLevel, setEditLevel] = useState({});
   const [saving, setSaving] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const loadSkills = useCallback(async () => {
     try {
@@ -69,14 +72,18 @@ const MySkills = () => {
     }
   };
 
-  const handleDelete = async (skill) => {
-    if (!window.confirm(`Remove "${skill.name}" from your skills?`)) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      const { data } = await api.delete(`/skills/${skill._id}`);
+      const { data } = await api.delete(`/skills/${deleteTarget._id}`);
       toast.success(data.message);
       await loadSkills();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete skill.');
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -122,7 +129,7 @@ const MySkills = () => {
                         <span className="name">{skill.name}</span>
                         <button
                           className="icon-btn"
-                          onClick={() => handleDelete(skill)}
+                          onClick={() => setDeleteTarget(skill)}
                           title="Remove skill"
                         >
                           <Trash size={18} />
@@ -191,6 +198,17 @@ const MySkills = () => {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this skill?"
+        message={`Do you want to remove "${deleteTarget?.name}" from your skills? Your job matches will be recalculated.`}
+        confirmText="Yes, delete"
+        danger
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
+
 {addOpen && (
         <div className="modal-overlay" onClick={() => setAddOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>

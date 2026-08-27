@@ -464,7 +464,7 @@ p.sub,
   position: relative;
 }
 
-.input-icon-wrap svg {
+.input-icon-wrap > svg {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -486,8 +486,25 @@ p.sub,
   border: none;
   color: var(--muted);
   cursor: pointer;
-  padding: 6px;
+  padding: 7px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  z-index: 2;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+/* Keep the eye icon inside the button's clickable area */
+.input-icon-wrap .toggle-eye svg {
+  position: static;
+  transform: none;
+  pointer-events: none;
+}
+
+.input-icon-wrap .toggle-eye:hover {
+  color: var(--primary);
+  background: var(--primary-soft);
 }
 
 /* Range slider */
@@ -949,4 +966,40 @@ input[type='range'] {
   .skill-grid { grid-template-columns: 1fr; }
 
   .row { gap: 14px; }
+}
+/* ---------- Confirm dialog ---------- */
+.confirm-message {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-top: -6px;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+/* Navbar user chip (name + email) acts as a button */
+.nav-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.nav-user-chip:hover {
+  background: rgba(255, 255, 255, 0.14);
 }
